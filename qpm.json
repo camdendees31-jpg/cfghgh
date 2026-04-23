@@ -30,7 +30,6 @@
     "ndk": "27",
     "scripts": {
       "build": [
-        "qpm qmod build",
         "cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo",
         "cmake --build ./build"
       ],
