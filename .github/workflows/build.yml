@@ -17,27 +17,16 @@ jobs:
         with:
           submodules: recursive
 
-      - name: List QPM release assets
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release view --repo QuestPackageManager/QPM.CLI --json assets \
-            | jq -r '.assets[].name'
-
       - name: Install QPM
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           mkdir -p ~/qpm
           gh release download --repo QuestPackageManager/QPM.CLI \
-            --pattern "*x86_64*linux*" \
+            --pattern "qpm-linux-x64-musl.zip" \
             --dir ~/qpm \
             --clobber
-          ls -la ~/qpm
-          BINARY=$(find ~/qpm -type f | head -n 1)
-          echo "Found binary: $BINARY"
-          file "$BINARY"
-          mv "$BINARY" ~/qpm/qpm
+          unzip ~/qpm/qpm-linux-x64-musl.zip -d ~/qpm
           chmod +x ~/qpm/qpm
           echo "$HOME/qpm" >> $GITHUB_PATH
 
