@@ -1,1 +1,11 @@
-
+{
+  "name": "YourModName",
+  "id": "your-mod-id",
+  "author": "YourName",
+  "version": "1.0.0",
+  "packageId": "woosterGames.animalCompany",
+  "packageVersion": "1.0.0",
+  "description": "A cool mod for Animal Company VR",
+  "modFiles": ["libYourMod.so"],
+  "libraryFiles": []
+}
