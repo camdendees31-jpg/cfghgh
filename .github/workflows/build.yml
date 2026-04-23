@@ -18,21 +18,25 @@ jobs:
           submodules: recursive
 
       - name: List QPM release assets
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          curl -s https://api.github.com/repos/QuestPackageManager/QPM.CLI/releases/latest \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          gh release view --repo QuestPackageManager/QPM.CLI --json assets \
             | jq -r '.assets[].name'
 
       - name: Install QPM
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ASSET_URL=$(curl -s https://api.github.com/repos/QuestPackageManager/QPM.CLI/releases/latest \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            | jq -r '.assets[] | select(.name | test("x86_64.*linux|linux.*x86_64"; "i")) | .browser_download_url' \
-            | head -n 1)
-
-          echo "Downloading QPM from: $ASSET_URL"
           mkdir -p ~/qpm
-          curl -L "$ASSET_URL" -o ~/qpm/qpm
+          gh release download --repo QuestPackageManager/QPM.CLI \
+            --pattern "*linux*" \
+            --dir ~/qpm \
+            --clobber
+          ls ~/qpm
+          BINARY=$(find ~/qpm -type f | head -n 1)
+          echo "Found binary: $BINARY"
+          mv "$BINARY" ~/qpm/qpm
           chmod +x ~/qpm/qpm
           echo "$HOME/qpm" >> $GITHUB_PATH
 
