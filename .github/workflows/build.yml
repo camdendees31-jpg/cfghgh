@@ -10,7 +10,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
@@ -38,8 +37,21 @@ jobs:
       - name: Verify QPM installed
         run: qpm --version
 
+      - name: Cache QPM deps
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/QPM-RS/cache
+          key: qpm-cache-${{ hashFiles('qpm.shared.json', 'qpm.json') }}
+          restore-keys: qpm-cache-
+
       - name: Restore QPM dependencies
         run: qpm restore
+
+      - name: Cache Android NDK
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/QPM-RS/ndk
+          key: qpm-ndk-r27
 
       - name: Setup NDK
         run: qpm ndk resolve -d
