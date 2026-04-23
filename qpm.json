@@ -19,7 +19,7 @@
     }
   ],
   "workspace": {
-    "ndk": "r27c",
+    "ndk": "27",
     "scripts": {
       "build": "cmake --build ./build --config RelWithDebInfo 2>&1",
       "qmod": "python3 buildQMOD.py your-mod-id"
