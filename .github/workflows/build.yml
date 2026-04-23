@@ -17,12 +17,17 @@ jobs:
         with:
           submodules: recursive
 
+      - name: List QPM release assets
+        run: |
+          curl -s https://api.github.com/repos/QuestPackageManager/QPM.CLI/releases/latest \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            | jq -r '.assets[].name'
+
       - name: Install QPM
         run: |
-          # Use GitHub API to find the correct Linux binary name
           ASSET_URL=$(curl -s https://api.github.com/repos/QuestPackageManager/QPM.CLI/releases/latest \
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            | jq -r '.assets[] | select(.name | test("linux"; "i")) | select(.name | test("musl|gnu")) | .browser_download_url' \
+            | jq -r '.assets[] | select(.name | test("x86_64.*linux|linux.*x86_64"; "i")) | .browser_download_url' \
             | head -n 1)
 
           echo "Downloading QPM from: $ASSET_URL"
