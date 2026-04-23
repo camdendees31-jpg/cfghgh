@@ -27,7 +27,7 @@
   "workspace": {
     "ndk": "27",
     "scripts": {
-      "build": ["cmake -B build -G Ninja && cmake --build ./build --config RelWithDebInfo"],
+      "build": ["cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo && cmake --build ./build"],
       "qmod": ["python3 buildQMOD.py your-mod-id"]
     }
   }
