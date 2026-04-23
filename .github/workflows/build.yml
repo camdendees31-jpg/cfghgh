@@ -19,13 +19,26 @@ jobs:
 
       - name: Install QPM
         run: |
+          # Use GitHub API to find the correct Linux binary name
+          ASSET_URL=$(curl -s https://api.github.com/repos/QuestPackageManager/QPM.CLI/releases/latest \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            | jq -r '.assets[] | select(.name | test("linux"; "i")) | select(.name | test("musl|gnu")) | .browser_download_url' \
+            | head -n 1)
+
+          echo "Downloading QPM from: $ASSET_URL"
           mkdir -p ~/qpm
-          curl -L https://github.com/QuestPackageManager/QPM.CLI/releases/latest/download/qpm-linux -o ~/qpm/qpm
+          curl -L "$ASSET_URL" -o ~/qpm/qpm
           chmod +x ~/qpm/qpm
           echo "$HOME/qpm" >> $GITHUB_PATH
 
+      - name: Verify QPM installed
+        run: qpm --version
+
       - name: Restore QPM dependencies
         run: qpm restore
+
+      - name: Setup NDK
+        run: qpm ndk resolve -d
 
       - name: Build .so
         run: qpm s build
