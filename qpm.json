@@ -6,6 +6,8 @@
     "url": null,
     "additionalData": {}
   },
+  "sharedDir": "shared",
+  "dependenciesDir": "extern",
   "dependencies": [
     {
       "id": "scotland2",
@@ -20,8 +22,6 @@
   ],
   "workspace": {
     "ndk": "27",
-    "sharedDir": "shared",
-    "dependenciesDir": "extern",
     "scripts": {
       "build": ["cmake --build ./build --config RelWithDebInfo"],
       "qmod": ["python3 buildQMOD.py your-mod-id"]
