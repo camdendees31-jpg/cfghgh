@@ -1,1 +1,28 @@
-
+{
+  "info": {
+    "name": "YourModName",
+    "id": "your-mod-id",
+    "version": "1.0.0",
+    "url": null,
+    "additionalData": {}
+  },
+  "dependencies": [
+    {
+      "id": "scotland2",
+      "versionRange": "^1.0.0",
+      "additionalData": {}
+    },
+    {
+      "id": "beatsaber-hook",
+      "versionRange": "^3.0.0",
+      "additionalData": {}
+    }
+  ],
+  "workspace": {
+    "ndk": "r27c",
+    "scripts": {
+      "build": "cmake --build ./build --config RelWithDebInfo 2>&1",
+      "qmod": "python3 buildQMOD.py your-mod-id"
+    }
+  }
+}
