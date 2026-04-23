@@ -17,6 +17,11 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ninja-build cmake
+
       - name: Install QPM
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
