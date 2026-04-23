@@ -1,1 +1,54 @@
+name: Build Mod
 
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:  # lets you trigger it manually from GitHub UI
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      # Install QPM (Quest Package Manager)
+      - name: Setup QPM
+        uses: Fernthedev/qpm-action@main
+        with:
+          workflow_token: ${{ secrets.GITHUB_TOKEN }}
+          restore: true   # runs `qpm restore` to download dependencies
+          cache: true     # caches deps between runs to speed things up
+
+      # Build the .so using cmake via QPM script
+      - name: Build .so
+        run: |
+          cd $GITHUB_WORKSPACE
+          qpm s build
+
+      # Package into .qmod
+      - name: Package .qmod
+        run: |
+          cd $GITHUB_WORKSPACE
+          qpm s qmod
+
+      # Upload the .qmod as a build artifact
+      - name: Upload .qmod artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-qmod
+          path: "*.qmod"
+          if-no-files-found: error
+
+      # Optional: also upload the raw .so
+      - name: Upload .so artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-so
+          path: "build/*.so"
+          if-no-files-found: warn
