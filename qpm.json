@@ -20,6 +20,8 @@
   ],
   "workspace": {
     "ndk": "27",
+    "sharedDir": "shared",
+    "dependenciesDir": "extern",
     "scripts": {
       "build": ["cmake --build ./build --config RelWithDebInfo"],
       "qmod": ["python3 buildQMOD.py your-mod-id"]
