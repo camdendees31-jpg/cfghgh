@@ -1,34 +1,33 @@
+# include some defines automatically made by qpm
+include(qpm_defines.cmake)
+
 cmake_minimum_required(VERSION 3.22)
-project(your-mod-id)
+project(${COMPILE_ID})
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# QPM generated files
-include(${CMAKE_CURRENT_LIST_DIR}/extern/includes/qpm_defines.cmake OPTIONAL)
-include(${CMAKE_CURRENT_LIST_DIR}/extern/includes/extern.cmake OPTIONAL)
-
-# Collect source files
-file(GLOB_RECURSE SOURCE_FILES
-    src/*.cpp
-    src/*.c
+add_library(
+    ${COMPILE_ID}
+    SHARED
 )
 
-# Build the mod shared library
-add_library(your-mod-id SHARED ${SOURCE_FILES})
+target_compile_options(${COMPILE_ID} PRIVATE -Wno-invalid-offsetof)
+target_compile_options(${COMPILE_ID} PRIVATE -fdeclspec)
+target_compile_definitions(${COMPILE_ID} PRIVATE -DMOD_ID="${MOD_ID}")
+target_compile_definitions(${COMPILE_ID} PRIVATE -DVERSION="${MOD_VERSION}")
 
-target_include_directories(your-mod-id PRIVATE
-    ${CMAKE_CURRENT_LIST_DIR}/include
-    ${CMAKE_CURRENT_LIST_DIR}/shared
-)
+RECURSE_FILES(cpp_file_list ${SOURCE_DIR}/*.cpp)
+RECURSE_FILES(c_file_list ${SOURCE_DIR}/*.c)
+target_sources(${COMPILE_ID} PRIVATE ${cpp_file_list} ${c_file_list})
 
-# Link QPM dependencies
-if(EXISTS ${CMAKE_CURRENT_LIST_DIR}/extern/includes/extern.cmake)
-    target_link_libraries(your-mod-id PRIVATE extern)
-endif()
+target_include_directories(${COMPILE_ID} PRIVATE .)
+target_include_directories(${COMPILE_ID} PRIVATE ${SHARED_DIR})
+target_include_directories(${COMPILE_ID} PRIVATE ${EXTERN_DIR}/includes)
+target_include_directories(${COMPILE_ID} PRIVATE ${INCLUDE_DIR})
+target_include_directories(${COMPILE_ID} SYSTEM PRIVATE ${EXTERN_DIR}/includes/libil2cpp/il2cpp/external/baselib/Include)
+target_include_directories(${COMPILE_ID} SYSTEM PRIVATE ${EXTERN_DIR}/includes/libil2cpp/il2cpp/external/baselib/Platforms/Android/Include)
 
-# Android specific settings
-target_compile_options(your-mod-id PRIVATE
-    -fvisibility=hidden
-    -fvisibility-inlines-hidden
-)
+target_link_libraries(${COMPILE_ID} PRIVATE -llog)
+
+include(extern.cmake)
